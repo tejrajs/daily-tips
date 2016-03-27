@@ -11,6 +11,7 @@ use app\models\ContactForm;
 use app\models\SignupForm;
 use app\components\GDI_image;
 use app\models\Setting;
+use yii\web\Session;
 
 class SiteController extends Controller
 {
