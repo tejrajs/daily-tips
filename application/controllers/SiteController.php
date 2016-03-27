@@ -113,4 +113,69 @@ class SiteController extends Controller
     			'model' => $model,
     	]);
     }
+    
+    public function actionConnect()
+    {
+    	$session = new Session();
+    	$session->open();
+    	 
+    	$fb = new Facebook([
+    			'app_id' => Setting::getValue('FB_APP_ID'),
+				'app_secret' => Setting::getValue('FB_APP_SECRET'),
+    			'default_graph_version' => 'v2.5',
+    			//'default_access_token' => '{access-token}', // optional
+    	]);
+    	 
+    	$helper = $fb->getRedirectLoginHelper();
+    	try {
+    		$token = $helper->getAccessToken ();
+    	} catch ( \Facebook\Exceptions\FacebookResponseException $e ) {
+    		echo 'Graph returned an error: ' . $e->getMessage ();
+    		exit ();
+    	} catch ( \Facebook\Exceptions\FacebookSDKException $e ) {
+    		echo 'Facebook SDK returned an error: ' . $e->getMessage();
+    		exit;
+    	}
+    	 
+    	$permissions = ['email', 'user_likes','user_posts','publish_actions']; // optional
+    	$loginUrl = $helper->getLoginUrl('https://my-fb-apps.herokuapp.com/site/callback', $permissions);
+    	echo '<a href="' . $loginUrl . '">Log in with Facebook!</a>';
+    }
+    
+    public function actionCallback()
+    {
+    	$session = new Session();
+    	$session->open();
+    	 
+    	$fb = new Facebook([
+    			'app_id' => Setting::getValue('FB_APP_ID'),
+				'app_secret' => Setting::getValue('FB_APP_SECRET'),
+    			'default_graph_version' => 'v2.5',
+    			//'default_access_token' => '{access-token}', // optional
+    	]);
+    	$helper = $fb->getRedirectLoginHelper();
+    	 
+    	try {
+    		$accessToken = $helper->getAccessToken();
+    	} catch(\Facebook\Exceptions\FacebookResponseException $e) {
+    		// When Graph returns an error
+    		echo 'Graph returned an error: ' . $e->getMessage();
+    		exit;
+    	} catch(\Facebook\Exceptions\FacebookSDKException $e) {
+    		// When validation fails or other local issues
+    		echo 'Facebook SDK returned an error: ' . $e->getMessage();
+    		exit;
+    	}
+    	 
+    	if (isset($accessToken)) {
+    		// Logged in!
+    		$session['facebook_access_token'] = (string) $accessToken;
+    		return $this->redirect('https://apps.facebook.com/tej_fb_apps/');
+    		// Now you can redirect to another page and use the
+    		// Now you can redirect to another page and use the
+    		// access token from $_SESSION['facebook_access_token']
+    	}else{
+    		return $this->redirect(['/site/connect']);
+    	}
+    }
 }
