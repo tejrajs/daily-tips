@@ -16,12 +16,7 @@ use Facebook\Facebook;
 
 class SiteController extends Controller
 {
-	public function init(){
-		if($this->action->id == 'index'){
-			$this->enableCsrfValidation = false;
-		}
-	}
-	
+	//public $enableCsrfValidation = false;
     public function behaviors()
     {
         return [
@@ -60,6 +55,9 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
+    	$session = new Session();
+    	$session->open();
+    	
         return $this->render('index');
     }
 
