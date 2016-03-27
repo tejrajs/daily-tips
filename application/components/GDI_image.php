@@ -44,7 +44,7 @@ class GDI_image{
 		// 1: thick and close,  2: thin and wide space ,  3: thick and close , 4: thick and white space
 	}
 	private function HexToRGB($hex){
-		$hex = ereg_replace("#", "", $hex);
+		$hex = preg_replace("#", "", $hex);
 		$color = array();
 
 		if(strlen($hex) == 3) {
