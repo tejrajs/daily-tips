@@ -10,6 +10,7 @@ use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\SignupForm;
 use app\components\GDI_image;
+use app\models\Setting;
 
 class SiteController extends Controller
 {
@@ -138,7 +139,7 @@ class SiteController extends Controller
     	}
     	 
     	$permissions = ['email', 'user_likes','user_posts','publish_actions']; // optional
-    	$loginUrl = $helper->getLoginUrl('https://my-fb-apps.herokuapp.com/site/callback', $permissions);
+    	$loginUrl = $helper->getLoginUrl(Setting::getValue('APP_CALLBACK_URL'), $permissions);
     	echo '<a href="' . $loginUrl . '">Log in with Facebook!</a>';
     }
     
@@ -170,7 +171,7 @@ class SiteController extends Controller
     	if (isset($accessToken)) {
     		// Logged in!
     		$session['facebook_access_token'] = (string) $accessToken;
-    		return $this->redirect('https://apps.facebook.com/tej_fb_apps/');
+    		return $this->redirect(Setting::getValue('FB_APP_URL'));
     		// Now you can redirect to another page and use the
     		// Now you can redirect to another page and use the
     		// access token from $_SESSION['facebook_access_token']
