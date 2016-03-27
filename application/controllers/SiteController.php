@@ -12,6 +12,7 @@ use app\models\SignupForm;
 use app\components\GDI_image;
 use app\models\Setting;
 use yii\web\Session;
+use Facebook\Facebook;
 
 class SiteController extends Controller
 {
